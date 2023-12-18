@@ -1,206 +1,419 @@
+
 #include<stdio.h>
-#include<string.h>
-#include<windows.h>
 #include<conio.h>
+#include<windows.h>
+#include<string.h>
 #include<stdlib.h>
-#include"interface.c"
-struct user 
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                          定义银行数据结构体
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+struct other
 {
-    char accountname[50];   //账号
-    char phone[50];     // 账户号码
-    char password[50];  // 密码
-    float money;         // 钱
+    int age;
+    char sex[10];
+    char email[20];
+    char nation[20];
+};
+
+
+struct bankaccount 
+{
+    char accountname[20];
+    char accountnumber[20];
+    char accountpassword[20];
+    double balance;
+    struct other  otherinformation;
 
 };
-int main()
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//主界面
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+char maininterface()
 {
-      struct user  user1 , user2;    // 定义两个用户
-      char filename[30],filename1[30];      // 打开文件的载体数组
-      FILE *fp,*fp1;                      // 文件指针
-      char  opt;                     //  界面选择登录还是注册
-      char  conl;                 // 账户的状态  是激活还是 禁止
-      char choice;                    // 登录后的用户选项
-      char phoneA[50],passwordA[50];    // 登陆时临时的账号和密码的载体
-      float amount;                     // 存款或者取钱online transfer 时的钱的载体
-    jiemian();
-    scanf("%c",&opt);       fflush(stdin);  // 清楚输入流中的回车
+    char choice;
 
-    system("cls");  //清屏进入用户选择的界面
+    puts("    --------------------------------------------------------     ");
+    puts("    -                   Bank    System                     -     ");
+    puts("    -                                                      -     ");
+    puts("    -                                                      -     ");
+    puts("    -                                                      -     ");
+    puts("    -                                                      -     ");
+    puts("    -        [1]  register         [2]  login              -     ");
+    puts("    -                                                      -     ");
+    puts("    -                                                      -     ");
+    puts("    -                                                      -     ");
+    puts("    -                                                      -     ");
+    puts("    -                                                      -     ");
+    puts("    --------------------------------------------------------     ");
+    printf(" please enter your choice >>> ");
 
-    if(opt=='1')                          //  创建一个用户
-    {
-        printf(" please input your acountname ");    //用户的名字
-        scanf("%s",user1.accountname);
+    scanf("%c",&choice);  fflush( stdin );
 
-        printf(" please input your phonenumber ");   //用户的账号
-        scanf("%s",user1.phone);
+    return choice;
 
-        printf(" please input your password ");      //用户的密码
-        scanf("%s", user1.password);
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//注册用户
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void Registeroperation( )
+{
 
-        user1.money=0;                               //用户余额为0
+		struct bankaccount  accountA;
+        char creatfilename[30];
+        FILE *creatfp;
+
+
+        printf(" please input your acountname ");    
+        scanf("%s", accountA.accountname);  fflush(stdin);
+
+        printf(" please input your phonenumber ");   
+        scanf("%s", accountA.accountnumber );   fflush(stdin);
+
+        printf(" please input your password ");      
+        scanf("%s", accountA.accountpassword );     fflush(stdin);
+
+        accountA.balance = 0;                              
 
 
 
-        strcpy(filename,user1.phone);                // 将账号赋值到filename数组中
-        fp=fopen(strcat(filename,".bat"),"w");         // 创建一个 账号+.bat 的文件
+        strcpy( creatfilename , accountA.accountnumber );                
+        creatfp = fopen( strcat( creatfilename , ".bat" ) , "w" );      
 
-         if (fwrite(&user1,sizeof(struct user),1,fp)!=0)      // 将user1中的数据写入 fp文件中（账号+.bat）
+         if ( fwrite( &accountA , sizeof( struct bankaccount ) , 1 , creatfp ) != 0 ) 
          {
-            puts(" Created successful !!! ");                  // 打开无误 ---》 creat successful !!!
+            printf(" The account is successfully created !!! ");                  
          }
-         else {puts(" creat faile !!!");}                        // 打开出错  --》》error
+         else 
+         {
+            printf(" Account creation failed !!! ");
+         }                       
         
-        fclose(fp);                                           // 无论成功与否    都关闭打开的文件
+
+        fclose( creatfp );                                          
+    
+
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//some operation 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void nextoperation( char choice ,struct bankaccount  * account )
+{
+    switch( choice )
+    {
+        case '1':  
+        {
+
+            printf("**************************** personal information ****************************");
+            printf("   *                                                                         *");
+            printf("   *    Account name :  %s                                                   *", account->accountname );
+            printf("   *                                                                         *");
+            printf("   *    Account number:  %s                                                  *", account->accountnumber );
+            printf("   *                                                                         *");
+            printf("   *    Account password:  %s                                                *", account->accountpassword );
+            printf("   *                                                                         *");
+            printf("   *    Age :  %s                                                            *", account->otherinformation.age);
+            printf("   *                                                                         *");
+            printf("   *    Sex :  %s                                                            *", account->otherinformation.sex );
+            printf("   *                                                                         *");
+            printf("   *    Nation :  %s                                                         *", account->otherinformation.nation );
+            printf("   *                                                                         *");
+            printf("   *    Email :   %s                                                         *", account->otherinformation.email );
+            printf("   *                                                                         *");
+            printf("   *                                                                         *");
+            printf("   *                                                                         *");
+            printf("   *                                                                         *");
+            printf("*********************************************************************************");
+
+
+
+        } break;
+        case '2': 
+        {
+            printf(" Balance : %lf "  , account->balance );
+
+
+
+
+
+        } break;
+        case '3':  
+        {
+            double howmuch ;
+			FILE *fp;
+
+			fp=fopen( strcat( account->accountnumber ,".obt") , "w" );
+
+			printf(" How much do you want to deposit :  ");
+			scanf("%f",&howmuch);       fflush(stdin);
+
+			account->balance=account->balance + howmuch;
+
+			fwrite( account , sizeof(account) , 1 , fp );
+			fclose(fp);
+
+
+        } break;
+        case '4':    
+        {
+            
+                int howmuch;
+				FILE *fp;
+
+				fp=fopen(strcat(account->accountnumber ,".obt"),"w");
+				
+				printf("How much do you want to get ? \n");
+				printf(">>  ");
+				scanf("%d", &howmuch);      fflush(stdin);
+				
+				fread( account , sizeof(account) , 1 , fp);
+				if(account->balance < howmuch )
+				{
+					printf(" sorry dont too much money ! ");
+				
+				}
+				else
+				{
+					account->balance = account->balance - howmuch;			
+					fwrite(account, sizeof(account) , 1 , fp);
+					
+				}
+						
+				fclose(fp);
+
+
+
+        } break;
+        case '5':   
+        {
+            
+			struct bankaccount transferaccount;         
+		//	char Aaccountname[20];
+			int temp; 
+
+			FILE *fp , *transferfp ;
+			
+		A:	printf(" please input you want to transfer's account : ");
+			scanf( "%s" ,transferaccount.accountnumber );       fflush(stdin);
+
+                              
+            if( ( transferfp=fopen(strcat( transferaccount.accountnumber , ".obt" ) , "r" ) ) == NULL )
+            {
+                printf(" This account does not exist !!! ");
+                printf(" Please re-enter a valid account !!! ");
+
+                goto A;
+            }
+			// transferfp = fopen( strcat( transferaccount.accountnumber , ".obt" ) , "r" );
+			fread( & transferaccount , sizeof( struct bankaccount ) , 1 , transferfp );                  
+            fclose( transferfp );
+
+			printf(" How much do you want to transfer :");
+			scanf( "%d" , &temp );      fflush(stdin);
+			
+			if( temp > account->balance )
+			{
+				printf("dont enough money !!!");
+			}
+			else
+			{
+			
+			fp = fopen(strcat( account->accountnumber , ".obt" ), "w" ); 
+            account->balance -= temp ;
+			fwrite( account , sizeof( struct bankaccount ) , 1 , fp );                 
+            fclose( fp );
+
+            
+            transferfp = fopen( strcat( transferaccount.accountnumber , ".obt" ) , "w" );
+			//transferaccount.balance = transferaccount.balance - temp ;
+			transferaccount.balance += temp ;
+            fwrite( &transferaccount , sizeof( struct bankaccount ) , 1 , transferfp );
+            fclose( transferfp );
+
+			}
+			
+
+
+			
+
+        } break;
+        case '6':    
+        {
+            char midpassword[20];
+            FILE *fp;
+                                                                        //************ some bug ***********//
+
+
+            printf(" Please enter your old password :");
+            scanf("%s",midpassword);        fflush(stdin);
+            if( strcmp( account->accountpassword , midpassword ) == 0 )
+            {
+                printf(" Please enter your new password :");
+                scanf("%s",midpassword);        fflush(stdin);
+                fp=fopen(account->accountnumber,"w");
+                strcpy( account->accountpassword,midpassword );
+                fwrite( account , sizeof( struct bankaccount ) , 1 , fp );
+                fclose(fp);
+
+            }
+            printf(" Please enter your new password :");
+
+        } break;
+        case '7':   
+        {
+            
+            exit(0);
+
+        } break;
+        case '8':   
+        {
+            system("cls");
+
+        } break;
+        default :
+        {
+            printf(" You entered the wrong option, please re-enter it !!! ");
+
+        } 
     }
 
 
-    else if(opt=='2')                                  // 登录用户 
-        {
-            printf(" please input your phonenumber : ");     // 输入用户的账号
-            scanf("%s",phoneA);
+}
 
-            printf(" please input your password  :");    // 输入用户的密码
-            scanf("%s",passwordA);  getchar(); // 读取最后一个字符
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//用户功能界面
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+char  userfunctioninterface( struct bankaccount  account )
+{
 
-            strcpy(filename,phoneA);                   // 将账号复制到filename中
-            fp=fopen(strcat(filename,".bat"),"r");     // 打开filename.bat 的用户文件
+    char choice ;
+    system("color 02");
+    printf("        welcome  NO. %s                          ",account.accountnumber);
 
-            if(fp==NULL)             // 打开是否成功----》用户是否存在
+    puts(" ************************************************");
+    puts(" *                                              *");
+    puts(" *       1)  Basic Information                  *");         // 1.  鏌ヨ璐︽埛浣欓
+    puts(" *       2)  Check your balance                 *");                 // 2.  瀛橀挶
+    puts(" *       3)  Saving                             *");                // 3.  鍙栭挶
+    puts(" *       4)  Withdraw money                     *");               // 4.  鍦ㄧ嚎杞处
+    puts(" *       5)  Transfer                           *");           // 5.  淇敼瀵嗙爜
+    puts(" *       6)  Change your password               *");
+    puts(" *       7)  Sign out                           *");
+    puts(" *                                              *");
+    puts(" *                                              *");
+    puts(" ************************************************");
+    printf(" please enter your choice  >>>  ");
+    scanf( "%c" , &choice ); fflush(stdin);
+	return choice;
+   // nextoperation( choice ,  account );
+
+}
+ 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//登录用户
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+struct bankaccount Signinoperation(  )
+{
+                                  
+        struct bankaccount midaccount,account;  
+        char midfilename[30];   
+        FILE *midfp;
+
+        A:  printf( " please input your phonenumber : " );     
+            scanf( "%s" , midaccount.accountnumber );       fflush(stdin);
+
+            printf(" please input your password  :");   
+            scanf( "%s" , midaccount.accountpassword );  fflush(stdin); 
+
+            strcpy( midfilename , midaccount.accountnumber );                  
+            midfp=fopen( strcat( midfilename , ".bat" ) , "r" );    
+
+            if( midfp == NULL )           
             {
-                printf(" This account is not exist !!!");       // 用户不存在
+                printf(" The account does not exist !!!");       
+                printf(" Please re-enter your account and password !!! ");
+                goto A ;
             }
             else
             {
-                fread(&user1,sizeof(struct user),1,fp);         fclose(fp);    // 成功打开 ，将用户的信息写入user1中
-                if(strcmp(user1.password, passwordA)==0)      // 核对密码是否正确
+                fread( &account , sizeof( struct bankaccount ) , 1 ,midfp);        fclose( midfp );   
+                if( strcmp( account.accountpassword , midaccount.accountpassword ) == 0 )     
                 {
-                    system("cls");
-                    function();    // user jiemian 
-                   
-                    scanf("%c",&choice);  getchar(); // 输入想要选择的服务
+                  //  system("cls");
+                  printf(" login successfully !!! ");    
+                //  userfunctioninterface( & account );   
 
+				return  ( account ) ;
 
-                    while(choice!='6')
-                    {   
-                        
-                         switch(choice)  // 根据选择 进行不同的操作
-                        {
-                            case '1':  printf("The acount have %d money",user1.money);break;
-
-
-                            case '2': 
-                            {
-                                    printf(" \nplease input how much you want to deposit :");
-                                    scanf("%f",&amount); fflush(stdin);
-                                    user1.money+=amount;
-                                    fp=fopen(filename,"w");
-                                    if(fwrite(&user1,sizeof(struct user),1,fp)!=0)
-                                    {
-                                        puts(" deposit is successfull");
-                                    }
-                                    fclose(fp);
-
-                            }  break;
-
-
-                            case '3':
-                            {
-                                    printf(" \nhow much money do you want to draw :");
-                                    scanf("%f",&amount); fflush(stdin);
-                                    user1.money-=amount;
-                                    fp=fopen(filename,"w");
-                                    if(fwrite(&user1,sizeof(struct user),1,fp)!=0)
-                                    {
-                                        puts(" draw money  is successfull");
-                                    }
-                            }break;
-
-
-                            case '4':
-                            {
-                                printf(" \nplease input you want to transfer account phone :");
-                                scanf("%s",phoneA);  fflush(stdin);
-                                strcpy(filename1,phoneA);
-                                fp1=fopen(strcat(filename,".bat"),"r");
-                                fread(&user2, sizeof(struct user),1,fp);
-                                fclose(fp);
-                                if(fp==NULL)
-                                {
-                                    puts(" \nThis account phone is not exist !!!");
-
-                                }
-                                printf("\n please input you how much want to transfer:");
-                                scanf("%f",&amount); fflush(stdin);
-
-                                        if(amount > user1.money)
-                                        {
-                                            puts(" \nyour money is not enough ");
-                                        }
-                                        user2.money+=amount;
-                                        fp1=fopen(filename1,"w");
-                                        fwrite(&user2, sizeof(struct user ),1,fp1);
-
-
-                                        user1.money-=amount;
-                                        fp=fopen(strcat(user1.phone,".bat"),"w");
-                                        fwrite(&user1,sizeof(struct user),1,fp);
-
-
-                            }break;
-
-
-                            case '5':
-                            {
-
-                                printf("please input the new password :");
-                                scanf("%s",phoneA); fflush(stdin);
-                                    fopen(strcat(user1.phone,".bat"),"w");
-                                    strcpy(user1.password,phoneA);
-                                    fwrite(&user1, sizeof(struct user ),1,fp);
-
-                            }break;
-
-
-                            case '6' : exit(0); break;
-
-
-                            default :printf(" choice is woring !!!");
-                        
-                         }  
-                          
-                           // function(); // 功能选项界面
-                            printf(" \nplease enter your choice >>> ");
-                            scanf("%c",&choice); getchar();
-
-
-                       
-
-                     }
 
                 }
-                
-                else {    // 账号密码错误
-                puts("password is error !!!");
-                }
-
+                else
+                {
+                    printf("login fail !!! ");
+                }  
 
             }
 
+}
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//主函数
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int main()
+{   
 
+    char choice;
+	char choice2;
+	static struct bankaccount   revice;
+    
+    choice=maininterface();
+    if( choice == '1' )
+    {
+        Registeroperation( );    
+    }
+    else if( choice == '2' )
+        {
+            revice = Signinoperation( );  
+            system("cls");
+            while(1)
+            {
+
+                choice2=userfunctioninterface(  revice  );
+                nextoperation( choice ,  &revice );
+                system("cls");
+
+            } 
+			
         }
-        else printf(" input is error !!!");
-
-
-
-
-
-
 
 
     getch();
 
-    return 0;
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//程序结束
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+/*
+Bank system
+
+2023-12-14
+
+tsoukuang
+
+*/
